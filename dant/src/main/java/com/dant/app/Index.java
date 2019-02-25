@@ -16,6 +16,7 @@ public class Index {
 	
 	public void SetData(int colonne) {
 		BufferedReader reader;
+		long start = System.currentTimeMillis();
 		try {
 			File file = new File("tripdata_exemple.csv");
 			reader = new BufferedReader(new FileReader(file));
@@ -37,6 +38,7 @@ public class Index {
 		} catch (Exception e) {
 			
 		}
+		System.out.println(System.currentTimeMillis() - start);
 	}
 	
 	public String[] parse(String line) {
