@@ -25,6 +25,7 @@ public class TestEndpoint {
 	@Path("/list")
 	public List<String> getListInParams(@QueryParam("ids") List<String> ids) {
 		System.out.println(ids);
+		System.out.println("test commit");
 		return ids;
 	}
 
