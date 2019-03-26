@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Index {
-
+	
+	private int col;
 	private HashMap<String, ArrayList<String>> lignes;
 
-	public Index() {
+	public Index(int col) {
 		this.lignes = new HashMap<String, ArrayList<String>>();
+		this.col = col;
 	}
 	
 	public void SetData(int colonne) {
@@ -41,8 +43,17 @@ public class Index {
 		System.out.println(System.currentTimeMillis() - start);
 	}
 	
+	public String getData(String index) {
+		return lignes.get(index).toString();
+	}
+	
 	public String[] parse(String line) {
 		return line.split(",");
+	}
+
+	public int getCol() {
+		// TODO Auto-generated method stub
+		return this.col;
 	}
 	
 }

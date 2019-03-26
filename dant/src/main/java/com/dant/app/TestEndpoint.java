@@ -20,7 +20,7 @@ public class TestEndpoint {
 //	@GET
 //	@Produces(MediaType.TEXT_HTML)
 //	public String helloWorld() {
-//		return "Hello World christenpd";
+//		return "Hello World";
 //	}
 	
 	@POST
@@ -35,17 +35,28 @@ public class TestEndpoint {
 	@POST
 	@Path("/table/{name}/index/{indexCol}")
 	public Index createIndex(@PathParam("name")String name, @PathParam("indexCol")int indexCol) {
-		Index index = new Index();
+		Index index = new Index(indexCol);
 		Table tab = Table.getTablebyName(name);
 		
 		tab.addIndex(index);
 		long start = System.currentTimeMillis();
 		index.SetData(indexCol);
 		System.out.println(System.currentTimeMillis() - start);
-		return index;
-		
+		return index;	
 	}
 
+	
+	//retourne ligne en fonction de l'index
+	@POST
+	@Path("/table/{name}/{indexCol}/{index}")
+	public String getLine(@PathParam("name")String name, @PathParam("indexCol")int indexCol, @PathParam("index")String param_index) {
+		Table tab = Table.getTablebyName(name);
+		
+		Index i = tab.getIndex(indexCol);
+		
+		return i.getData(param_index);
+	}
+	
 	@POST
 	@Path("/entity")
 	public Account getAccount(Account account) {
