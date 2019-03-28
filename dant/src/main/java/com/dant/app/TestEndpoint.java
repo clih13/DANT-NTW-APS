@@ -34,27 +34,26 @@ public class TestEndpoint {
 	
 	@POST
 	@Path("/table/{name}/index/{indexCol}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Index createIndex(@PathParam("name")String name, @PathParam("indexCol")int indexCol) {
 		Index index = new Index(indexCol);
-		Table tab = Table.getTablebyName(name);
-		
+		Table tab = Table.getTablebyName(name);		
 		tab.addIndex(index);
-		long start = System.currentTimeMillis();
-		index.SetData(indexCol);
-		System.out.println(System.currentTimeMillis() - start);
+		index.setData(indexCol);
 		return index;	
 	}
 
 	
 	//retourne ligne en fonction de l'index
-	@POST
+	@GET
 	@Path("/table/{name}/{indexCol}/{index}")
-	public String getLine(@PathParam("name")String name, @PathParam("indexCol")int indexCol, @PathParam("index")String param_index) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getLine(@PathParam("name")String name, @PathParam("indexCol")int indexCol, @PathParam("index")String param_index) {
 		Table tab = Table.getTablebyName(name);
 		
 		Index i = tab.getIndex(indexCol);
 		
-		return i.getData(param_index);
+		return Response.status(201).entity(i.getData(param_index)).build();
 	}
 	
 	@POST

@@ -1,54 +1,65 @@
 package com.dant.app;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 
 public class Index {
 	
 	private int col;
-	private HashMap<String, ArrayList<String>> lignes;
+	private HashMap<String, ArrayList<String[]>> lignes;
 
 	public Index(int col) {
-		this.lignes = new HashMap<String, ArrayList<String>>();
+		this.lignes = new HashMap<>();
 		this.col = col;
 	}
 	
-	public void SetData(int colonne) {
-		BufferedReader reader;
-		long start = System.currentTimeMillis();
+	public void setData(int colonne) {
+    	Reader in;
 		try {
-			File file = new File("tripdata_exemple.csv");
-			reader = new BufferedReader(new FileReader(file));
-			String line ;
-			String[] value;
+			in = new FileReader("/home/clih/Downloads/test.csv");
+			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
+			boolean header = true;
 			
-			for(int i=0; i<2; i++) {
-				line = reader.readLine();
-			}
-			
-			while((line = reader.readLine()) != null) {
-				value = parse(line);
-				ArrayList<String> values = new ArrayList<String>();
-				for(int i = 0; i<value.length; i++) {
-					values.add(value[i]);
+			long start = System.currentTimeMillis();
+			int cpt = 0;
+			for (CSVRecord record : records) {
+				if (!header) {
+					if(!lignes.containsKey(record.get(colonne-1)))
+						lignes.put(record.get(colonne-1), new ArrayList<String[]>());
+					
+					ArrayList<String[]> container = lignes.get(record.get(colonne-1));
+					String[] values = new String[17];
+					
+					for (int i = 0; i < 17; i++) {
+						values[i] = record.get(i);
+					}
+					
+					if(values.length > 0)
+						container.add(values);
+					
+					this.lignes.put(record.get(colonne-1), container);
+					
+					cpt++;
+					if(cpt % 100000 == 0)
+						System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start)/1000 + " s");
 				}
-				lignes.put(value[colonne-1], values);
+				header = false;
 			}
-		} catch (Exception e) {
-			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		System.out.println(System.currentTimeMillis() - start);
-	}
+		System.out.println("FINI");
+    }
 	
-	public String getData(String index) {
-		return lignes.get(index).toString();
-	}
-	
-	public String[] parse(String line) {
-		return line.split(",");
+	public ArrayList<String[]> getData(String index) {
+		return lignes.get(index);
 	}
 
 	public int getCol() {

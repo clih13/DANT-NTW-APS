@@ -35,6 +35,13 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.9.7</version>
 		</dependency>
+		    
+    <dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-csv</artifactId>
+		    <version>1.6</version>
+		</dependency>
+    
 	</dependencies>
 	<build>
 		<finalName>dant</finalName>
