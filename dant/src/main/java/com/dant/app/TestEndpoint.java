@@ -42,6 +42,18 @@ public class TestEndpoint {
 		index.setData(indexCol);
 		return index;	
 	}
+	
+	// createIndex method for testing purposes
+	@POST
+	@Path("/test/table/{name}/index/{indexCol}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public void createIndexTest(@PathParam("name")String name, @PathParam("indexCol")int indexCol) {
+		Index index = new Index(indexCol);
+		Table tab = Table.getTablebyName(name);		
+		tab.addIndex(index);
+		index.setData(indexCol);
+		return;	
+	}
 
 	
 	//retourne ligne en fonction de l'index

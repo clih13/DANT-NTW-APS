@@ -7,23 +7,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+
+import gnu.trove.map.hash.THashMap;
 
 public class Index {
 	
 	private int col;
-	private HashMap<String, ArrayList<String[]>> lignes;
+	private THashMap<String, ArrayList<String[]>> lignes;
 
 	public Index(int col) {
-		this.lignes = new HashMap<>();
+		this.lignes = new THashMap<>();
 		this.col = col;
 	}
 	
 	public void setData(int colonne) {
     	Reader in;
 		try {
-			in = new FileReader("/home/clih/Downloads/test.csv");
+			in = new FileReader("/var/tmp/yellow_tripdata_2015-01.csv");
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
 			boolean header = true;
 			
@@ -47,7 +50,7 @@ public class Index {
 					this.lignes.put(record.get(colonne-1), container);
 					
 					cpt++;
-					if(cpt % 100000 == 0)
+					if(cpt % 1000000 == 0)
 						System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start)/1000 + " s");
 				}
 				header = false;
