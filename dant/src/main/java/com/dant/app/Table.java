@@ -28,12 +28,12 @@ public class Table {
 		return null;
 	}
 	
-	public Index getIndex(int index) {
-		for(Index i : this.index) {
-			if(i.getCol() == index) {
-				return i;
-			}
-		}
-		return null;
-	}
+//	public Index getIndex(int index) {
+//		for(Index i : this.index) {
+//			if(i.getCol() == index) {
+//				return i;
+//			}
+//		}
+//		return null;
+//	}
 }

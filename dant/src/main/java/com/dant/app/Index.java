@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -14,19 +14,22 @@ import org.apache.commons.csv.CSVRecord;
 import gnu.trove.map.hash.THashMap;
 
 public class Index {
-	
-	private int col;
-	private THashMap<String, ArrayList<String[]>> lignes;
 
-	public Index(int col) {
-		this.lignes = new THashMap<>();
-		this.col = col;
-	}
+	List<String[]> lines = new ArrayList<String[]>();
+	Map<String, List<Integer>> index = new HashMap<String, List<Integer>>();
 	
-	public void setData(int colonne) {
+	
+
+	public Index() {
+
+	}
+
+
+	public void parseCSV(int col_index) {
+		
     	Reader in;
 		try {
-			in = new FileReader("/var/tmp/yellow_tripdata_2015-01.csv");
+			in = new FileReader("tripdata_exemple.csv");
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
 			boolean header = true;
 			
@@ -34,40 +37,73 @@ public class Index {
 			int cpt = 0;
 			for (CSVRecord record : records) {
 				if (!header) {
-					if(!lignes.containsKey(record.get(colonne-1)))
-						lignes.put(record.get(colonne-1), new ArrayList<String[]>());
 					
-					ArrayList<String[]> container = lignes.get(record.get(colonne-1));
 					String[] values = new String[17];
 					
 					for (int i = 0; i < 17; i++) {
 						values[i] = record.get(i);
+						System.out.println(values[i]);
 					}
 					
-					if(values.length > 0)
-						container.add(values);
-					
-					this.lignes.put(record.get(colonne-1), container);
-					
+					insert(values, col_index);
+										
 					cpt++;
-					if(cpt % 1000000 == 0)
-						System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start)/1000 + " s");
+
+					System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start)/1000 + " s");
 				}
 				header = false;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("FINI");
-    }
+		
+		System.out.println(index);
+	}
 	
-	public ArrayList<String[]> getData(String index) {
-		return lignes.get(index);
+	
+	public void insert(String[] line, int col_index) {
+		int nb_lignes = lines.size();
+
+		lines.add(line);
+
+		List<Integer> rows = index.get(line[col_index]);
+
+		if (rows == null) {
+			rows = new ArrayList<Integer>();
+			index.put(line[col_index], rows);
+		}
+
+		rows.add(nb_lignes);
+
 	}
 
-	public int getCol() {
-		// TODO Auto-generated method stub
-		return this.col;
+	public List<String[]> getLignes(String key) {
+
+		List<Integer> rows = index.get(key);
+		if (rows == null)
+			return null;
+		List<String[]> res = new ArrayList<String[]>();
+
+		for (Integer row : rows) {
+			res.add(lines.get(row));
+		}
+
+		return res;
 	}
+
 	
+	public List<String[]> getLignesWithoutIndex(String key, int col_index) {
+		
+		List<String[]> res = new ArrayList<String[]>();
+		
+		
+		for(String[] line : lines) {
+			if(line[col_index].equals(key)) {
+				res.add(line);
+			}
+		}
+		
+		return res;
+	}
+
 }

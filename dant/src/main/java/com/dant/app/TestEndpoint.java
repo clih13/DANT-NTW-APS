@@ -36,10 +36,10 @@ public class TestEndpoint {
 	@Path("/table/{name}/index/{indexCol}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Index createIndex(@PathParam("name")String name, @PathParam("indexCol")int indexCol) {
-		Index index = new Index(indexCol);
+		Index index = new Index();
 		Table tab = Table.getTablebyName(name);		
 		tab.addIndex(index);
-		index.setData(indexCol);
+		index.parseCSV(indexCol);
 		return index;	
 	}
 	
@@ -48,25 +48,25 @@ public class TestEndpoint {
 	@Path("/test/table/{name}/index/{indexCol}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public void createIndexTest(@PathParam("name")String name, @PathParam("indexCol")int indexCol) {
-		Index index = new Index(indexCol);
+		Index index = new Index();
 		Table tab = Table.getTablebyName(name);		
 		tab.addIndex(index);
-		index.setData(indexCol);
+		index.parseCSV(indexCol);
 		return;	
 	}
 
 	
 	//retourne ligne en fonction de l'index
-	@GET
-	@Path("/table/{name}/{indexCol}/{index}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLine(@PathParam("name")String name, @PathParam("indexCol")int indexCol, @PathParam("index")String param_index) {
-		Table tab = Table.getTablebyName(name);
-		
-		Index i = tab.getIndex(indexCol);
-		
-		return Response.status(201).entity(i.getData(param_index)).build();
-	}
+//	@GET
+//	@Path("/table/{name}/{indexCol}/{index}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response getLine(@PathParam("name")String name, @PathParam("indexCol")int indexCol, @PathParam("index")String param_index) {
+//		Table tab = Table.getTablebyName(name);
+//		
+//		Index i = tab.getIndex(indexCol);
+//		
+//		return Response.status(201).entity(i.getData(param_index)).build();
+//	}
 	
 	@POST
 	@Path("/entity")
