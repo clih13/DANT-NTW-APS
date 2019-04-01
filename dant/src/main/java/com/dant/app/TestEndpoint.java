@@ -25,22 +25,22 @@ public class TestEndpoint {
 	
 	@POST
 	@Path("/table/{name}")
-	public Table createTable(@PathParam("name")String name) {
+	public void createTable(@PathParam("name")String name) {
 		Table table = new Table(name);
 		Table.listTable.add(table);
-		return table;
+		//return table;
 		
 	}
 	
 	@POST
 	@Path("/table/{name}/index/{indexCol}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Index createIndex(@PathParam("name")String name, @PathParam("indexCol")int indexCol) {
+	public void createIndex(@PathParam("name")String name, @PathParam("indexCol")int indexCol) {
 		Index index = new Index();
 		Table tab = Table.getTablebyName(name);		
 		tab.addIndex(index);
 		index.parseCSV(indexCol);
-		return index;	
+		//return index;	
 	}
 	
 	// createIndex method for testing purposes
