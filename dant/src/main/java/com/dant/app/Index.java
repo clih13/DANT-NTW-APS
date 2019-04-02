@@ -21,69 +21,111 @@ public class Index {
 
 	List<String> lines = new ArrayList<String>();
 	Map<String, List<Integer>> index = new HashMap<String, List<Integer>>();
-	
+
 	public Index() {
 
 	}
 
 	public void parseCSV(int col_index) {
-		BufferedReader reader;
+		Reader in;
 		try {
-			String line;
-			String[] values;
-			int cpt = 0;
+			in = new FileReader("yellow_tripdata_2018-01.csv");
+			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
+			boolean header = true;
+
 			long start = System.currentTimeMillis();
+			int cpt = 0;
+			for (CSVRecord record : records) {
+				if (!header) {
 
-			RandomAccessFile ra = new RandomAccessFile("yellow_tripdata_2018-01.csv", "rw");
+					String[] values = new String[17];
 
-			ra.seek(0);// Read from start
-			long p = ra.getFilePointer();
-			
-			String d = ra.readLine();
-			ra.readLine();
-			
-			while (d != null && cpt < 1000) {
-				long pos = ra.getFilePointer();
-				d = ra.readLine();
+					for (int i = 0; i < 17; i++) {
+						values[i] = record.get(i);
+						//System.out.println(values[i]);
+					}
 
-				insert(d, col_index, pos);
-				cpt++;
+					insert(values, col_index);
 
-				if (cpt % 100000 == 0) {
-					System.out.println(
-							"Stocké " + cpt + " lignes en " + (System.currentTimeMillis() - start) / 1000 + " s");
+					cpt++;
+					if (cpt % 1000000 == 0) {
+						System.out
+								.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start) / 1000 + " s");
+					}
 				}
-
+				header = false;
 			}
-			//2019-01-01 00:19:39
-//			ra.seek(53124);
-//			System.out.println(ra.readLine());
-//			ra.seek(87593);
-//			System.out.println(ra.readLine());
-			ra.close();
-
-		} catch (Exception e) {
-
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
+
 		System.out.println(index);
+
+		// BufferedReader reader;
+		// try {
+		// String line;
+		// String[] values;
+		// int cpt = 0;
+		// long start = System.currentTimeMillis();
+		//
+		// RandomAccessFile ra = new RandomAccessFile("yellow_tripdata_2018-01.csv",
+		// "rw");
+		//
+		// ra.seek(0);// Read from start
+		// long p = ra.getFilePointer();
+		//
+		// String d = ra.readLine();
+		// ra.readLine();
+		//
+		// while (d != null && cpt < 1000) {
+		// long pos = ra.getFilePointer();
+		// d = ra.readLine();
+		//
+		// insert(d, col_index, pos);
+		// cpt++;
+		//
+		// if (cpt % 100000 == 0) {
+		// System.out.println(
+		// "Stocké " + cpt + " lignes en " + (System.currentTimeMillis() - start) / 1000
+		// + " s");
+		// }
+		//
+		// }
+		// 2019-01-01 00:19:39
+		// ra.seek(53124);
+		// System.out.println(ra.readLine());
+		// ra.seek(87593);
+		// System.out.println(ra.readLine());
+		// ra.close();
+
+		// } catch (Exception e) {
+		//
+		// }
+
+		// System.out.println(index);
 	}
 
 	public String[] parse(String line) {
 		return line.split(",");
 	}
 
-	public void insert(String line, int col_index, long pos) throws IOException {
+	// public void insert(String line, int col_index, long pos) throws IOException {
+	//
+	// String[] line_tab = parse(line);
+	// List<Integer> rows = index.get(line_tab[col_index]);
+	//
+	// if (rows == null) {
+	// rows = new ArrayList<Integer>();
+	// index.put(line_tab[col_index], rows);
+	// }
+	//
+	// rows.add((int) pos);
+	// }
 
-		String[] line_tab = parse(line);
-		List<Integer> rows = index.get(line_tab[col_index]);
+	public void insert(String[] values, int col_index) throws IOException {
 
-		if (rows == null) {
-			rows = new ArrayList<Integer>();
-			index.put(line_tab[col_index], rows);
-		}
+		return;
 
-		rows.add((int) pos);
 	}
 
 	// public List<String> getLignes(String key) {
