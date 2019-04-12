@@ -1,40 +1,35 @@
 package com.dant.app;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
-import gnu.trove.map.hash.THashMap;
 
 public class Index {
 
 	List<String[]> lines = new ArrayList<String[]>();
 	Map<String, List<Integer>> index = new HashMap<String, List<Integer>>();
-	
-	
+	private int col;
 
-	public Index() {
-
+	public Index(int col) {
+		this.col = col;
 	}
 
 
-	public void parseCSV(int col_index) {
-		
+	public void parseCSV(int col_index) throws IOException {
+		int cpt = 0;
     	Reader in;
 		try {
-			in = new FileReader("tripdata_exemple.csv");
+			in = new FileReader("/home/clih/Downloads/yellow_tripdata_2013-12.csv");
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
 			boolean header = true;
 			
 			long start = System.currentTimeMillis();
-			int cpt = 0;
 			for (CSVRecord record : records) {
 				if (!header) {
 					
@@ -42,22 +37,24 @@ public class Index {
 					
 					for (int i = 0; i < 17; i++) {
 						values[i] = record.get(i);
-						System.out.println(values[i]);
 					}
 					
-					insert(values, col_index);
+					insert(values, col_index-1);
 										
 					cpt++;
-
-					System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start)/1000 + " s");
+					if (cpt % 500000 == 0) {
+						System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start) / 1000 + " s");
+						writeToDisk();
+					}
 				}
 				header = false;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("FINI " + cpt);
+		writeToDisk();
 		
-		System.out.println(index);
 	}
 	
 	
@@ -82,12 +79,7 @@ public class Index {
 		List<Integer> rows = index.get(key);
 		if (rows == null)
 			return null;
-		List<String[]> res = new ArrayList<String[]>();
-
-		for (Integer row : rows) {
-			res.add(lines.get(row));
-		}
-
+		List<String[]> res = readFromDisk(rows);
 		return res;
 	}
 
@@ -103,6 +95,50 @@ public class Index {
 			}
 		}
 		
+		return res;
+	}
+	
+	public int getCol() {
+		return this.col;
+	}
+	
+	public void writeToDisk() throws IOException {
+		String fileName = "data_index_" + (this.col-1) + ".txt";
+		File dataFile = new File(fileName);
+		dataFile.createNewFile();
+
+		FileWriter fileWriter = new FileWriter(dataFile, true);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		
+		for(String[] s : this.lines) {
+			for (int i = 0; i < 17; i++) {
+				bufferedWriter.write(s[i]);
+				if(i != 16)
+					bufferedWriter.write(",");
+			}
+			bufferedWriter.newLine();
+		}
+		
+		lines.clear();
+		System.gc();			//  <--- Garbage Collector : free up memory space
+		bufferedWriter.close();
+
+	}
+	
+	public List<String[]> readFromDisk(List<Integer> rows) {
+		String fileName = "data_index_" + (this.col-1) + ".txt";
+		File dataFile = new File(fileName);
+		List<String[]> res = new ArrayList<String[]>();
+		
+		for(Integer row : rows) {
+			try(Stream<String> lines = Files.lines(dataFile.toPath())){
+				String line = lines.skip(row).findFirst().get();
+				res.add(line.split(","));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return res;
 	}
 
