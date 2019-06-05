@@ -14,15 +14,6 @@ public class SearchEquals {
 
     public SearchEquals(UriInfo info){
         this.info = info;
-
-        for(Map.Entry<String, List<String>> entry : info.getQueryParameters().entrySet()){
-            System.out.println(entry.getKey());
-            for(String s : entry.getValue()){
-                System.out.println(s);
-            }
-        }
-
-
         parameters = setParameters(info);
     }
 
