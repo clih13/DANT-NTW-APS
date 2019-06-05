@@ -8,8 +8,8 @@ import javax.ws.rs.core.*;
 
 public class SearchEquals {
 
-    UriInfo info;
-    Map<String, String> parameters;
+    private UriInfo info;
+    private Map<String, String> parameters;
 
 
     public SearchEquals(UriInfo info){
@@ -56,7 +56,7 @@ public class SearchEquals {
                          break;
 
                         case "tpep_pickup_datetime":
-                        if (r.tpep_pickup_datetime == value)
+                        if (r.getTpep_pickup_datetime() == value)
                         {
                             find = true;
                            NbFieldToFiend--;

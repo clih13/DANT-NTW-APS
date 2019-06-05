@@ -5,158 +5,25 @@ package com.dant.app;
 
 public class Index {
 
-	// List<String[]> lines = new ArrayList<String[]>();
-	// Map<String, List<Integer>> index = new HashMap<String, List<Integer>>();
-	// private int col;
-
-	// public Index(int col) {
-	// 	this.col = col;
-	// }
-
-
-	// public void parseCSV(int col_index) throws IOException {
-	// 	int cpt = 0;
-    // 	Reader in;
-	// 	try {
-	// 		in = new FileReader("/home/clih/Downloads/yellow_tripdata_2013-12.csv");
-	// 		Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
-	// 		boolean header = true;
-			
-	// 		long start = System.currentTimeMillis();
-	// 		for (CSVRecord record : records) {
-	// 			if (!header) {
-					
-	// 				String[] values = new String[17];
-					
-	// 				for (int i = 0; i < 17; i++) {
-	// 					values[i] = record.get(i);
-	// 				}
-					
-	// 				insert(values, col_index-1);
-										
-	// 				cpt++;
-	// 				if (cpt % 500000 == 0) {
-	// 					System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start) / 1000 + " s");
-	// 					writeToDisk();
-	// 				}
-	// 			}
-	// 			header = false;
-	// 		}
-	// 	} catch (IOException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	System.out.println("FINI " + cpt);
-	// 	writeToDisk();
-		
-	// }
-	
-	
-	// public void insert(String[] line, int col_index) {
-	// 	int nb_lignes = lines.size();
-
-	// 	lines.add(line);
-
-	// 	List<Integer> rows = index.get(line[col_index]);
-
-	// 	if (rows == null) {
-	// 		rows = new ArrayList<Integer>();
-	// 		index.put(line[col_index], rows);
-	// 	}
-
-	// 	rows.add(nb_lignes);
-
-	// }
-
-	// public List<String[]> getLignes(String key) {
-
-	// 	List<Integer> rows = index.get(key);
-	// 	if (rows == null)
-	// 		return null;
-	// 	List<String[]> res = readFromDisk(rows);
-	// 	return res;
-	// }
-
-	
-	// public List<String[]> getLignesWithoutIndex(String key, int col_index) {
-		
-	// 	List<String[]> res = new ArrayList<String[]>();
-		
-		
-	// 	for(String[] line : lines) {
-	// 		if(line[col_index].equals(key)) {
-	// 			res.add(line);
-	// 		}
-	// 	}
-		
-	// 	return res;
-	// }
-	
-	// public int getCol() {
-	// 	return this.col;
-	// }
-	
-	// public void writeToDisk() throws IOException {
-	// 	String fileName = "data_index_" + (this.col-1) + ".txt";
-	// 	File dataFile = new File(fileName);
-	// 	dataFile.createNewFile();
-
-	// 	FileWriter fileWriter = new FileWriter(dataFile, true);
-	// 	BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		
-	// 	for(String[] s : this.lines) {
-	// 		for (int i = 0; i < 17; i++) {
-	// 			bufferedWriter.write(s[i]);
-	// 			if(i != 16)
-	// 				bufferedWriter.write(",");
-	// 		}
-	// 		bufferedWriter.newLine();
-	// 	}
-		
-	// 	lines.clear();
-	// 	System.gc();			//  <--- Garbage Collector : free up memory space
-	// 	bufferedWriter.close();
-
-	// }
-	
-	// public List<String[]> readFromDisk(List<Integer> rows) {
-	// 	String fileName = "data_index_" + (this.col-1) + ".txt";
-	// 	File dataFile = new File(fileName);
-	// 	List<String[]> res = new ArrayList<String[]>();
-		
-	// 	for(Integer row : rows) {
-	// 		try(Stream<String> lines = Files.lines(dataFile.toPath())){
-	// 			String line = lines.skip(row).findFirst().get();
-	// 			res.add(line.split(","));
-	// 		} catch (IOException e) {
-	// 			// TODO Auto-generated catch block
-	// 			e.printStackTrace();
-	// 		}
-	// 	}
-	// 	return res;
-	// }
-
-
-
-
-	public int VendorID;
-	public String tpep_pickup_datetime;
-	public String tpep_dropoff_datetime;
-	public int passenger_count;
-	public String trip_distance;
-	public String pickup_longitude;
-	public String pickup_latitude;
-	public int RateCodeID;
-	public String store_and_fwd_flag;
-	public String dropoff_longitude;
-	public String dropoff_latitude;
-	public int payment_type;
-	public float fare_amount;
-	public float extra;
-	public float mta_tax;
-	public float tip_amount;
-	public float tolls_amount;
-	public float improvement_surcharge;
-	public float total_amount;
+	private int VendorID;
+	private String tpep_pickup_datetime;
+	private String tpep_dropoff_datetime;
+	private int passenger_count;
+	private String trip_distance;
+	private String pickup_longitude;
+	private String pickup_latitude;
+	private int RateCodeID;
+	private String store_and_fwd_flag;
+	private String dropoff_longitude;
+	private String dropoff_latitude;
+	private int payment_type;
+	private float fare_amount;
+	private float extra;
+	private float mta_tax;
+	private float tip_amount;
+	private float tolls_amount;
+	private float improvement_surcharge;
+	private float total_amount;
 
 
 	public Index() {
