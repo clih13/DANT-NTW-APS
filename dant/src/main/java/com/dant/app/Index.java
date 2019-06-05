@@ -12,7 +12,7 @@ import org.apache.commons.csv.CSVRecord;
 
 public class Index {
 
-	List<String[]> lines = new ArrayList<String[]>();
+	//List<String[]> lines = new ArrayList<String[]>();
 	Map<String, List<Integer>> index = new HashMap<String, List<Integer>>();
 	private int col;
 
@@ -25,9 +25,11 @@ public class Index {
 		int cpt = 0;
     	Reader in;
 		try {
-			in = new FileReader("/home/clih/Downloads/yellow_tripdata_2013-12.csv");
+			in = new FileReader("tripdata_exemple.csv");
 			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
 			boolean header = true;
+			
+			int lineNumber = 0;
 			
 			long start = System.currentTimeMillis();
 			for (CSVRecord record : records) {
@@ -39,13 +41,14 @@ public class Index {
 						values[i] = record.get(i);
 					}
 					
-					insert(values, col_index-1);
+					insert(values, col_index-1, lineNumber++);
 										
 					cpt++;
-					if (cpt % 500000 == 0) {
-						System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start) / 1000 + " s");
-						writeToDisk();
-					}
+					writeToDisk();
+//					if (cpt % 10 == 0) {
+//						System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start) / 1000 + " s");
+//						writeToDisk();
+//					}
 				}
 				header = false;
 			}
@@ -55,13 +58,21 @@ public class Index {
 		System.out.println("FINI " + cpt);
 		writeToDisk();
 		
+		System.out.println("Boucle for:");
+        for (Map.Entry mapentry : index.entrySet()) {
+           System.out.println("clé: "+mapentry.getKey() 
+                              + " | valeur: " + mapentry.getValue());
+        }
+
+
+		
 	}
 	
 	
-	public void insert(String[] line, int col_index) {
-		int nb_lignes = lines.size();
-
-		lines.add(line);
+	public void insert(String[] line, int col_index, int lineNumber) {
+//		int nb_lignes = lines.size();
+//
+//		lines.add(line);
 
 		List<Integer> rows = index.get(line[col_index]);
 
@@ -70,7 +81,7 @@ public class Index {
 			index.put(line[col_index], rows);
 		}
 
-		rows.add(nb_lignes);
+		rows.add(lineNumber);
 
 	}
 
@@ -84,19 +95,19 @@ public class Index {
 	}
 
 	
-	public List<String[]> getLignesWithoutIndex(String key, int col_index) {
-		
-		List<String[]> res = new ArrayList<String[]>();
-		
-		
-		for(String[] line : lines) {
-			if(line[col_index].equals(key)) {
-				res.add(line);
-			}
-		}
-		
-		return res;
-	}
+//	public List<String[]> getLignesWithoutIndex(String key, int col_index) {
+//		
+//		List<String[]> res = new ArrayList<String[]>();
+//		
+//		
+//		for(String[] line : lines) {
+//			if(line[col_index].equals(key)) {
+//				res.add(line);
+//			}
+//		}
+//		
+//		return res;
+//	}
 	
 	public int getCol() {
 		return this.col;
@@ -110,17 +121,26 @@ public class Index {
 		FileWriter fileWriter = new FileWriter(dataFile, true);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		
-		for(String[] s : this.lines) {
-			for (int i = 0; i < 17; i++) {
-				bufferedWriter.write(s[i]);
-				if(i != 16)
-					bufferedWriter.write(",");
-			}
-			bufferedWriter.newLine();
-		}
+//		for(String[] s : this.lines) {
+//			for (int i = 0; i < 17; i++) {
+//				bufferedWriter.write(s[i]);
+//				if(i != 16)
+//					bufferedWriter.write(",");
+//			}
+//			bufferedWriter.newLine();
+//		}
 		
-		lines.clear();
-		System.gc();			//  <--- Garbage Collector : free up memory space
+		for (Map.Entry mapentry : index.entrySet()) {
+//	           System.out.println("clé: "+mapentry.getKey() 
+//	                              + " | valeur: " + mapentry.getValue());
+			bufferedWriter.write(mapentry.getKey() + "[" + mapentry.getValue() + "]");
+			bufferedWriter.newLine();
+			
+	        }
+		
+		
+		//lines.clear();
+		//System.gc();			//  <--- Garbage Collector : free up memory space
 		bufferedWriter.close();
 
 	}

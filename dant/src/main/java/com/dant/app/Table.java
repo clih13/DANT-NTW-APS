@@ -16,7 +16,7 @@ public class Table {
 	}	
 	
 	public void addIndex(Index index) {
-		this.index.add(index);		
+	    this.index.add(index);
 	}
 	
 	public static Table getTablebyName(String name) {

@@ -41,7 +41,7 @@ public class TestEndpoint {
 		Table tab = Table.getTablebyName(name);		
 		tab.addIndex(index);
 		index.parseCSV(indexCol);
-		return index;	
+		return index;
 	}
 	
 	// createIndex method for testing purposes
@@ -64,7 +64,7 @@ public class TestEndpoint {
 	public Response getLines(@PathParam("name")String name, @PathParam("indexCol")int indexCol, @PathParam("index")String param_index) {
 		Table tab = Table.getTablebyName(name);
 		
-		Index i = tab.getIndex(indexCol);		
+		Index i = tab.getIndex(indexCol);
 		return Response.status(201).entity(i.getLignes(param_index)).build();
 	}
 	
