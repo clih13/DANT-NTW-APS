@@ -1,89 +1,101 @@
 package com.dant.app;
 
+import java.io.*;
+import java.util.*;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+
 public class Table {
 
-	// static ArrayList<Table> listTable = new ArrayList<Table>();
-	// private ArrayList<Index> index;
-	// private String name;
+	static Map<String, List<Index>> index = new HashMap<String, List<Index>>();
 
-	// public Table(String name) {
-	// 	this.index = new ArrayList<Index>();
-	// 	this.name = name;
-	// 	listTable.add(this);
-	// }	
+
+	public void parseCSV(int col_index) throws IOException {
 	
-	// public void addIndex(Index index) {
-	// 	this.index.add(index);		
-	// }
-	
-	// public static Table getTablebyName(String name) {
-	// 	for(Table t : listTable) {
-	// 		if(name.equals(t.name)) {
-	// 			return t;
-	// 		}
-	// 	}
-	// 	return null;
-	// }
-	
-	// public Index getIndex(int index) {
-	// 	for(Index i : this.index) {
-	// 		if(i.getCol() == index) {
-	// 			return i;
-	// 		}
-	// 	}
-	// 	return null;
-	// }
+		System.out.println("STARTING TO PARSE CSV !!!");
+
+		Reader in;
+		int cpt = 0;
+		long start = System.currentTimeMillis();
+		try {
+			in = new FileReader("test.csv");
+			Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
+			boolean header = true;
+
+			for (CSVRecord record : records) {
+
+				if(header){
+					header = false;
+				}
+				else{
+
+					String[] values = new String[19];
+					for (int i = 0; i < 19; i++) {
+						values[i] = record.get(i);
+					}
+					Index newLine = getNewIndexWithData(values);
+					putOnHashMap(values[col_index], newLine);
+
+					cpt++;
+					if (cpt % 500000 == 0) {
+						System.out.println("Stocké " + cpt + " ==>" + (System.currentTimeMillis() - start) / 1000 + " s");
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("END!!!!");
+	}
 
 
-	public int VendorID;
-	public String tpep_pickup_datetime;
-	public String tpep_dropoff_datetime;
-	public int passenger_count;
-	public String trip_distance;
-	public String pickup_longitude;
-	public String pickup_latitude;
-	public int RateCodeID;
-	public String store_and_fwd_flag;
-	public String dropoff_longitude;
-	public String dropoff_latitude;
-	public int payment_type;
-	public float fare_amount;
-	public float extra;
-	public float mta_tax;
-	public float tip_amount;
-	public float tolls_amount;
-	public float improvement_surcharge;
-	public float total_amount;
+	public void putOnHashMap(String key, Index newRow){
+		List<Index> rows = index.get(key);
 
+		if (rows == null) {
+			rows = new ArrayList<Index>();
+			index.put(key, rows);
+		}
 
+		rows.add(newRow);
+		index.put(key, rows);
 
-
-	public Table() {
 	}
 
 
 
-	public Table(int VendorID, String tpep_pickup_datetime, String tpep_dropoff_datetime, int passenger_count, String trip_distance, String pickup_longitude, String pickup_latitude, int RateCodeID, String store_and_fwd_flag, String dropoff_longitude, String dropoff_latitude, int payment_type, float fare_amount, float extra, float mta_tax, float tip_amount, float tolls_amount, float improvement_surcharge, float total_amount) {
-		this.VendorID = VendorID;
-		this.tpep_pickup_datetime = tpep_pickup_datetime;
-		this.tpep_dropoff_datetime = tpep_dropoff_datetime;
-		this.passenger_count = passenger_count;
-		this.trip_distance = trip_distance;
-		this.pickup_longitude = pickup_longitude;
-		this.pickup_latitude = pickup_latitude;
-		this.RateCodeID = RateCodeID;
-		this.store_and_fwd_flag = store_and_fwd_flag;
-		this.dropoff_longitude = dropoff_longitude;
-		this.dropoff_latitude = dropoff_latitude;
-		this.payment_type = payment_type;
-		this.fare_amount = fare_amount;
-		this.extra = extra;
-		this.mta_tax = mta_tax;
-		this.tip_amount = tip_amount;
-		this.tolls_amount = tolls_amount;
-		this.improvement_surcharge = improvement_surcharge;
-		this.total_amount = total_amount;
+
+
+
+	public Index getNewIndexWithData(String[] values){
+	
+		Index aNewIndex = new Index(
+			Integer.parseInt(values[0]),
+			values[1],
+			values[2],
+			Integer.parseInt(values[3]),
+			values[4],
+			values[5],
+			values[6],
+			Integer.parseInt(values[7]),
+			values[8],
+			values[9],
+			values[10],
+			Integer.parseInt(values[11]),
+			Float.parseFloat(values[12]),
+			Float.parseFloat(values[13]),
+			Float.parseFloat(values[14]),
+			Float.parseFloat(values[15]),
+			Float.parseFloat(values[16]),
+			Float.parseFloat(values[17]),
+			Float.parseFloat(values[18])
+		);
+		
+		return aNewIndex;
 	}
 
+	
 
 }
